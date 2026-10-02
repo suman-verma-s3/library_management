@@ -1,0 +1,252 @@
+/* =========================
+   BODY
+========================= */
+
+body {
+    background-color: #f7f8fc;
+    font-family: Arial, sans-serif;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar-brand {
+    font-size: 24px;
+}
+
+.navbar .nav-link {
+    color: #374151;
+    font-weight: 500;
+}
+
+.navbar .nav-link:hover {
+    color: #1d4ed8;
+}
+
+.navbar-btn {
+    padding: 8px 20px;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    background: linear-gradient(135deg, #172554, #1e3a8a);
+    color: white;
+
+    padding: 90px 0;
+}
+
+.hero h1 {
+    font-size: 52px;
+    font-weight: 700;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #dbeafe;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   HERO BUTTONS
+========================= */
+
+.hero-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-main {
+    background-color: #f59e0b;
+    color: white;
+    border: none;
+
+    padding: 12px 28px;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+}
+
+.btn-main:hover {
+    background-color: #d97706;
+    color: white;
+}
+
+
+/* =========================
+   LIBRARY ICON
+========================= */
+
+.library-icon {
+    font-size: 150px;
+}
+
+
+/* =========================
+   SECTION TITLE
+========================= */
+
+.section-title {
+    font-weight: 700;
+    color: #172554;
+}
+
+
+/* =========================
+   FEATURE CARD
+========================= */
+
+.feature-card {
+    border: none;
+
+    border-radius: 15px;
+
+    padding: 30px 20px;
+
+    height: 100%;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.feature-card h4 {
+    color: #172554;
+}
+
+.feature-card p {
+    line-height: 1.6;
+}
+
+
+/* =========================
+   FEATURE ICON
+========================= */
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #eff6ff;
+
+    border-radius: 12px;
+
+    font-size: 28px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+.stat-section {
+    background-color: #172554;
+    color: white;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    background-color: #111827;
+    color: #9ca3af;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 991px) {
+
+    .hero {
+        text-align: center;
+        padding: 70px 0;
+    }
+
+    .hero h1 {
+        font-size: 44px;
+    }
+
+    .hero p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .library-icon {
+        font-size: 120px;
+    }
+
+    .navbar-btn {
+        width: 100%;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 575px) {
+
+    .navbar-brand {
+        font-size: 18px;
+    }
+
+    .hero {
+        padding: 55px 0;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .hero-buttons {
+        display: block;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .library-icon {
+        font-size: 90px;
+    }
+
+    .feature-card {
+        padding: 25px 18px;
+    }
+
+    .stat-number {
+        font-size: 30px;
+    }
+}
