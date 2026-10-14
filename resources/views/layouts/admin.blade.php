@@ -13,18 +13,21 @@
             font-family: system-ui, sans-serif;
         }
 
-        .sidebar {
-            width: 250px;
-            min-height: 100vh;
-            background: #1e293b;
-            color: #cbd5e1;
-            position: fixed;
-            top: 0;
-            left: 0;
-            transition: transform .25s ease;
-            z-index: 1040;
-        }
-
+      .sidebar {
+    width: 250px;
+    height: 100vh;              
+    background: #1e293b;
+    color: #cbd5e1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: transform .25s ease;
+    z-index: 1040;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;              /* 👈 flex layout */
+    flex-direction: column;     /* 👈 vertical stack */
+}
         .sidebar .brand {
             padding: 1.25rem 1.5rem;
             border-bottom: 1px solid #334155;

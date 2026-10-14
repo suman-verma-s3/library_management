@@ -6,52 +6,79 @@
     <title>@yield('title', 'Librarian') — Library MS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body { background: #f1f5f9; font-family: system-ui, sans-serif; }
-        .sidebar {
-            width: 250px; min-height: 100vh;
-            background: #0f172a; color: #cbd5e1;
-            position: fixed; top: 0; left: 0;
-            transition: transform .25s ease; z-index: 1040;
-        }
-        .sidebar .brand {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid #334155;
-            font-weight: 700; color: #fff; font-size: 1.15rem;
-        }
-        .sidebar .nav-link {
-            color: #cbd5e1; padding: .75rem 1.5rem;
-            border-left: 3px solid transparent; font-size: .95rem;
-        }
-        .sidebar .nav-link:hover { background: #334155; color: #fff; }
-        .sidebar .nav-link.active {
-            background: #334155; color: #fff;
-            border-left-color: #10b981;
-        }
-        .sidebar .nav-link i { width: 20px; margin-right: 10px; }
-        .sidebar .section-label {
-            padding: 1rem 1.5rem .35rem;
-            font-size: .7rem; text-transform: uppercase;
-            letter-spacing: .08em; color: #64748b;
-        }
-        .main { margin-left: 250px; min-height: 100vh; }
-        .topbar {
-            background: #fff; border-bottom: 1px solid #e2e8f0;
-            padding: .85rem 1.5rem;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .content { padding: 1.5rem; }
-        @media (max-width: 991.98px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.show { transform: translateX(0); }
-            .main { margin-left: 0; }
-        }
-        .backdrop {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,.4); z-index: 1030;
-        }
-        .backdrop.show { display: block; }
-    </style>
+   <style>
+    body { background: #f1f5f9; font-family: system-ui, sans-serif; }
+
+    /* 👇 SIDEBAR — FIXED */
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        background: #0f172a;
+        color: #cbd5e1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transition: transform .25s ease;
+        z-index: 1040;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    /* Custom scrollbar */
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 3px;
+    }
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+
+    .sidebar .brand {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #334155;
+        font-weight: 700; color: #fff; font-size: 1.15rem;
+    }
+    .sidebar .nav-link {
+        color: #cbd5e1; padding: .75rem 1.5rem;
+        border-left: 3px solid transparent; font-size: .95rem;
+    }
+    .sidebar .nav-link:hover { background: #334155; color: #fff; }
+    .sidebar .nav-link.active {
+        background: #334155; color: #fff;
+        border-left-color: #10b981;
+    }
+    .sidebar .nav-link i { width: 20px; margin-right: 10px; }
+    .sidebar .section-label {
+        padding: 1rem 1.5rem .35rem;
+        font-size: .7rem; text-transform: uppercase;
+        letter-spacing: .08em; color: #64748b;
+    }
+
+    .main { margin-left: 250px; min-height: 100vh; }
+    .topbar {
+        background: #fff; border-bottom: 1px solid #e2e8f0;
+        padding: .85rem 1.5rem;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .content { padding: 1.5rem; }
+
+    @media (max-width: 991.98px) {
+        .sidebar { transform: translateX(-100%); }
+        .sidebar.show { transform: translateX(0); }
+        .main { margin-left: 0; }
+    }
+    .backdrop {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,.4); z-index: 1030;
+    }
+    .backdrop.show { display: block; }
+</style>
 </head>
 <body>
 
