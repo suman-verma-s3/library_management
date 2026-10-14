@@ -10,9 +10,16 @@
         <h5 class="fw-bold mb-1">All Students</h5>
         <p class="text-muted small mb-0">Manage library members</p>
     </div>
-    <a href="{{ route('librarian.students.create') }}" class="btn btn-success">
-        <i class="bi bi-plus-lg me-1"></i> Add Student
-    </a>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-success"
+                data-bs-toggle="modal"
+                data-bs-target="#importModal">
+            <i class="bi bi-upload me-1"></i> Import Excel
+        </button>
+        <a href="{{ route('librarian.students.create') }}" class="btn btn-success">
+            <i class="bi bi-plus-lg me-1"></i> Add Student
+        </a>
+    </div>
 </div>
 
 {{-- Filters --}}
@@ -54,7 +61,7 @@
                     <th>Phone</th>
                     <th>Course</th>
                     <th>Status</th>
-                    <th style="width:140px;" class="text-end">Actions</th>
+                    <th style="width:180px;" class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,6 +83,17 @@
                                class="btn btn-sm btn-outline-success">
                                 <i class="bi bi-pencil"></i>
                             </a>
+                             <a href="{{ route('librarian.students.qr', $s) }}"
+       class="btn btn-sm btn-outline-info"
+       title="View QR Code">
+        <i class="bi bi-qr-code"></i>
+    </a>
+    <a href="{{ route('librarian.students.idCard', $s) }}"
+       target="_blank"
+       class="btn btn-sm btn-outline-secondary"
+       title="Print ID Card">
+        <i class="bi bi-person-vcard"></i>
+    </a>
                             <form action="{{ route('librarian.students.destroy', $s) }}"
                                   method="POST" class="d-inline"
                                   onsubmit="return confirm('Delete this student?')">
@@ -106,4 +124,60 @@
     @endif
 </div>
 
+{{-- Import Modal --}}
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST"
+                  action="{{ route('librarian.students.import') }}"
+                  enctype="multipart/form-data">
+                @csrf
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Students from Excel</h5>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="file" class="form-label fw-medium">
+                            Excel File <span class="text-danger">*</span>
+                        </label>
+                        <input type="file"
+                               id="file"
+                               name="file"
+                               class="form-control @error('file') is-invalid @enderror"
+                               accept=".xlsx,.xls,.csv"
+                               required>
+                        @error('file')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted d-block mt-1">
+                            Allowed: .xlsx, .xls, .csv (max 2 MB)
+                        </small>
+                    </div>
+
+                    <div class="alert alert-info small mb-0">
+                        <strong>Required columns:</strong>
+                        <code>student_id</code>, <code>name</code>, <code>email</code><br>
+                        <strong>Optional:</strong>
+                        <code>phone</code>, <code>course</code>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light"
+                            data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-upload me-1"></i> Import
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 @endsection

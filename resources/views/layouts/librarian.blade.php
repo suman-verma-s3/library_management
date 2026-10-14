@@ -105,6 +105,10 @@
        href="{{ route('reports.inventory') }}">
         <i class="bi bi-box-seam"></i> Inventory
     </a>
+    <a class="nav-link {{ request()->routeIs('reports.fines') ? 'active' : '' }}"
+   href="{{ route('reports.fines') }}">
+    <i class="bi bi-cash-stack"></i> Fines
+</a>
 </nav>
 
     {{-- Account --}}

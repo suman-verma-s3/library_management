@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\BookCopy;
 use App\Models\Issue;
 use App\Models\Student;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
@@ -15,9 +16,9 @@ class ReportController extends Controller
     public function issued()
     {
         $issues = Issue::with(['student', 'bookCopy.book', 'issuedBy'])
-                       ->whereNull('returned_at')
-                       ->orderBy('due_date')
-                       ->paginate(20);
+            ->whereNull('returned_at')
+            ->orderBy('due_date')
+            ->paginate(20);
 
         return view('reports.issued', compact('issues'));
     }
@@ -28,10 +29,10 @@ class ReportController extends Controller
     public function overdue()
     {
         $issues = Issue::with(['student', 'bookCopy.book', 'issuedBy'])
-                       ->whereNull('returned_at')
-                       ->where('due_date', '<', now())
-                       ->orderBy('due_date')
-                       ->paginate(20);
+            ->whereNull('returned_at')
+            ->where('due_date', '<', now())
+            ->orderBy('due_date')
+            ->paginate(20);
 
         return view('reports.overdue', compact('issues'));
     }
@@ -42,13 +43,13 @@ class ReportController extends Controller
     public function students()
     {
         $students = Student::withCount([
-                            'issues as total_issues',
-                            'issues as active_issues' => function ($q) {
-                                $q->whereNull('returned_at');
-                            },
-                        ])
-                        ->orderBy('name')
-                        ->paginate(20);
+            'issues as total_issues',
+            'issues as active_issues' => function ($q) {
+                $q->whereNull('returned_at');
+            },
+        ])
+            ->orderBy('name')
+            ->paginate(20);
 
         return view('reports.students', compact('students'));
     }
@@ -59,9 +60,9 @@ class ReportController extends Controller
     public function studentHistory(Student $student)
     {
         $issues = Issue::with(['bookCopy.book', 'issuedBy', 'returnedBy'])
-                       ->where('student_id', $student->id)
-                       ->latest('issued_at')
-                       ->get();
+            ->where('student_id', $student->id)
+            ->latest('issued_at')
+            ->get();
 
         return view('reports.student-history', compact('student', 'issues'));
     }
@@ -82,21 +83,51 @@ class ReportController extends Controller
             'active_issues'    => Issue::whereNull('returned_at')->count(),
             'total_issues'     => Issue::count(),
             'overdue'          => Issue::whereNull('returned_at')
-                                      ->where('due_date', '<', now())
-                                      ->count(),
+                ->where('due_date', '<', now())
+                ->count(),
         ];
 
         // Books with their copy counts
         $books = Book::withCount([
-                        'copies',
-                        'copies as available_count' => fn($q) => $q->where('status', 'available'),
-                        'copies as issued_count'    => fn($q) => $q->where('status', 'issued'),
-                        'copies as damaged_count'   => fn($q) => $q->where('status', 'damaged'),
-                        'copies as lost_count'      => fn($q) => $q->where('status', 'lost'),
-                    ])
-                    ->orderBy('title')
-                    ->paginate(15);
+            'copies',
+            'copies as available_count' => fn($q) => $q->where('status', 'available'),
+            'copies as issued_count'    => fn($q) => $q->where('status', 'issued'),
+            'copies as damaged_count'   => fn($q) => $q->where('status', 'damaged'),
+            'copies as lost_count'      => fn($q) => $q->where('status', 'lost'),
+        ])
+            ->orderBy('title')
+            ->paginate(15);
 
         return view('reports.inventory', compact('stats', 'books'));
+    }
+
+    /**
+     * Fines report.
+     */
+    public function fines(Request $request)
+    {
+        $query = Issue::with(['student', 'bookCopy.book'])
+            ->where('fine_amount', '>', 0);
+
+        // Filter by paid status
+        if ($request->filled('status')) {
+            if ($request->status === 'paid') {
+                $query->where('fine_paid', true);
+            } elseif ($request->status === 'unpaid') {
+                $query->where('fine_paid', false);
+            }
+        }
+
+        $issues = $query->latest('returned_at')->paginate(20)->withQueryString();
+
+        // Stats
+        $stats = [
+            'total_fines'   => Issue::where('fine_amount', '>', 0)->sum('fine_amount'),
+            'collected'     => Issue::where('fine_paid', true)->sum('fine_amount'),
+            'pending'       => Issue::where('fine_paid', false)->where('fine_amount', '>', 0)->sum('fine_amount'),
+            'total_records' => Issue::where('fine_amount', '>', 0)->count(),
+        ];
+
+        return view('reports.fines', compact('issues', 'stats'));
     }
 }

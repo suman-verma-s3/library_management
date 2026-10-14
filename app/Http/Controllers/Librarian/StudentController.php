@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Librarian;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Imports\StudentsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -85,4 +87,34 @@ class StudentController extends Controller
         return redirect()->route('librarian.students.index')
                          ->with('success', 'Student deleted successfully.');
     }
+
+    public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+    ]);
+
+    Excel::import(new StudentsImport, $request->file('file'));
+
+    return redirect()->route('librarian.students.index')
+                     ->with('success', 'Students imported successfully.');
 }
+
+/**
+ * Display the QR code page for a student.
+ */
+public function showQr(Student $student)
+{
+    return view('librarian.students.qr', compact('student'));
+}
+
+/**
+ * Display the printable ID card for a student.
+ */
+public function printIdCard(Student $student)
+{
+    return view('librarian.students.id-card', compact('student'));
+}
+
+}
+

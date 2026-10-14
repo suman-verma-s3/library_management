@@ -21,14 +21,14 @@
 
                 {{-- Overdue Warning --}}
                 @if($issue->isOverdue())
-                    <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-triangle me-1"></i>
-                        <strong>Overdue!</strong>
-                        This book was due on
-                        <strong>{{ $issue->due_date->format('d M Y') }}</strong>
-                        ({{ $issue->due_date->diffInDays(now()) }} days ago).
-                    </div>
-                @endif
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        <strong>Overdue!</strong>
+        This book was due on
+        <strong>{{ $issue->due_date->format('d M Y') }}</strong>
+        ({{ $issue->due_date->diffInDays(now()) }} days ago).
+    </div>
+@endif
 
                 {{-- Issue Details --}}
                 <div class="border rounded-3 p-3 mb-4 bg-light">

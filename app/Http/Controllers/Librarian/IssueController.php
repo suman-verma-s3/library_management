@@ -157,7 +157,6 @@ public function returnBook(Issue $issue)
 
     try {
         DB::transaction(function () use ($issue) {
-            // Lock the copy so no concurrent operations happen
             $copy = BookCopy::where('id', $issue->book_copy_id)
                             ->lockForUpdate()
                             ->first();
@@ -166,21 +165,51 @@ public function returnBook(Issue $issue)
                 throw new \Exception('Book copy not found.');
             }
 
-            // Mark issue as returned
+            // Calculate fine
+            $daysLate = $issue->due_date->isPast()
+                ? $issue->due_date->diffInDays(now())
+                : 0;
+
+            $fineAmount = $daysLate * config('library.fine_per_day', 5);
+
             $issue->update([
                 'returned_at' => now(),
                 'returned_by' => Auth::id(),
+                'fine_amount' => $fineAmount,
             ]);
 
-            // Make the copy available again
             $copy->update(['status' => 'available']);
         });
 
+        $message = 'Book returned successfully.';
+
+        if ($issue->fresh()->fine_amount > 0) {
+            $message .= " Late fine: ₹{$issue->fresh()->fine_amount}";
+        }
+
         return redirect()->route('librarian.issues.index')
-                         ->with('success', 'Book returned successfully.');
+                         ->with('success', $message);
 
     } catch (\Exception $e) {
         return back()->with('error', $e->getMessage());
     }
+}
+
+/**
+ * Mark fine as paid.
+ */
+public function markFinePaid(Issue $issue)
+{
+    if ($issue->fine_amount <= 0) {
+        return back()->with('error', 'No fine to pay.');
+    }
+
+    if ($issue->fine_paid) {
+        return back()->with('error', 'Fine already paid.');
+    }
+
+    $issue->update(['fine_paid' => true]);
+
+    return back()->with('success', 'Fine marked as paid.');
 }
 }

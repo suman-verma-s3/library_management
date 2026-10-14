@@ -17,13 +17,15 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th>#</th>
+                    <th style="width:60px;">#</th>
                     <th>Student</th>
                     <th>Book</th>
                     <th>Accession No</th>
                     <th>Issued</th>
                     <th>Due</th>
                     <th class="text-center">Days Overdue</th>
+                    <th class="text-center">Expected Fine</th>
+                    <th style="width:120px;" class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,13 +49,24 @@
                         <td class="text-muted small">{{ $issue->due_date->format('d M Y') }}</td>
                         <td class="text-center">
                             <span class="badge bg-danger">
-                                {{ $issue->due_date->diffInDays(now()) }} days
+                                {{ (int) $issue->due_date->diffInDays(now()) }} days
                             </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-warning text-dark fs-6">
+                                ₹{{ number_format($issue->calculateFine(), 2) }}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="{{ route('librarian.issues.showReturn', $issue) }}"
+                               class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-arrow-return-left"></i> Return
+                            </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-success">
+                        <td colspan="9" class="text-center py-5 text-success">
                             <i class="bi bi-check-circle fs-1 d-block mb-2"></i>
                             No overdue books. 
                         </td>

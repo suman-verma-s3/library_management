@@ -10,9 +10,14 @@
             <h5 class="fw-bold mb-1">All Books</h5>
             <p class="text-muted small mb-0">Manage library books</p>
         </div>
-        <a href="{{ route('admin.books.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Add Book
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.books.export') }}" class="btn btn-outline-success">
+                <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+            </a>
+            <a href="{{ route('admin.books.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> Add Book
+            </a>
+        </div>
     </div>
 
     <div class="card border-0 shadow-sm rounded-3">
@@ -43,17 +48,19 @@
                             </td>
                             <td class="text-muted small">{{ $book->isbn ?? '—' }}</td>
                             <td class="text-muted small">{{ $book->publication_year ?? '—' }}</td>
-                            <td class="text-center"> {{-- 👈 NEW --}}
+                            <td class="text-center">
                                 <span class="badge bg-info bg-opacity-10 text-info">
                                     {{ $book->copies->count() }}
                                 </span>
                             </td>
                             <td class="text-end">
-                                <a href="{{ route('admin.books.edit', $book) }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ route('admin.books.edit', $book) }}"
+                                   class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form action="{{ route('admin.books.destroy', $book) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Delete this book?')">
+                                <form action="{{ route('admin.books.destroy', $book) }}"
+                                      method="POST" class="d-inline"
+                                      onsubmit="return confirm('Delete this book?')">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-outline-danger">
@@ -64,7 +71,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
+                            <td colspan="8" class="text-center py-5 text-muted">
                                 <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
                                 No books yet. Click "Add Book" to get started.
                             </td>

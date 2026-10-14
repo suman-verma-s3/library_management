@@ -48,14 +48,14 @@
                             Book <span class="text-danger">*</span>
                         </label>
                         <select id="book_id" class="form-select" required>
-                            <option value="">-- Select Book --</option>
+                            <option value="" selected disabled>-- Select Book --</option>
                             @foreach($books as $b)
                                 <option value="{{ $b->id }}">
                                     {{ $b->title }} — {{ $b->author }}
                                 </option>
                             @endforeach
                         </select>
-                        <small class="text-muted">Book select karne ke baad available copies load hongi.</small>
+                        <small class="text-muted">Available copies will load after selecting a book</small>
                     </div>
 
                     <div class="mb-4">
@@ -65,7 +65,7 @@
                         <select id="book_copy_id" name="book_copy_id"
                                 class="form-select @error('book_copy_id') is-invalid @enderror"
                                 required disabled>
-                            <option value="">-- First select a book --</option>
+                            <option value="" >-- First select a book --</option>
                         </select>
                         @error('book_copy_id')
                             <div class="invalid-feedback">{{ $message }}</div>

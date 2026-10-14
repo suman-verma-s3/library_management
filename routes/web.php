@@ -10,6 +10,9 @@ use App\Http\Controllers\Librarian\StudentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
+use App\Exports\BooksExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\Admin\AnalyticsController;
 
 use App\Http\Controllers\Librarian\DashboardController as LibrarianDashboard;
 
@@ -69,6 +72,15 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('books',      BookController::class)->except(['show']);
         Route::resource('copies',     BookCopyController::class)->except(['show']);
+
+
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+
+        Route::get('/copies/{copy}/print', [BookCopyController::class, 'printLabel'])
+            ->name('copies.printLabel');
+        Route::get('/books/export', function () {
+            return Excel::download(new BooksExport, 'books.xlsx');
+        })->name('books.export');
     });
 
 /*
@@ -84,7 +96,17 @@ Route::middleware(['auth', 'role:librarian'])
 
         Route::get('/dashboard', [LibrarianDashboard::class, 'index'])->name('dashboard');
 
+        Route::post('/students/import', [StudentController::class, 'import'])
+            ->name('students.import');
+        // Mark fine as paid
+        Route::put('/issues/{issue}/mark-paid', [IssueController::class, 'markFinePaid'])
+            ->name('issues.markPaid');
 
+          
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+
+        Route::get('/students/{student}/qr',      [StudentController::class, 'showQr'])->name('students.qr');
+        Route::get('/students/{student}/id-card', [StudentController::class, 'printIdCard'])->name('students.idCard');
 
         Route::resource('students', StudentController::class)->except(['show']);
 
@@ -96,6 +118,7 @@ Route::middleware(['auth', 'role:librarian'])
         // 👇 Return routes
         Route::get('/issues/{issue}/return',  [IssueController::class, 'showReturn'])->name('issues.showReturn');
         Route::put('/issues/{issue}/return',  [IssueController::class, 'returnBook'])->name('issues.return');
+        
     });
 
 /*
@@ -119,6 +142,10 @@ Route::middleware(['auth', 'role:admin|librarian'])
         Route::get('/students',            [ReportController::class, 'students'])->name('students');
         Route::get('/students/{student}',  [ReportController::class, 'studentHistory'])->name('studentHistory');
         Route::get('/inventory',           [ReportController::class, 'inventory'])->name('inventory');
+
+          Route::get('/fines', [ReportController::class, 'fines'])->name('fines');
+            
+
     });
 
 require __DIR__ . '/auth.php';

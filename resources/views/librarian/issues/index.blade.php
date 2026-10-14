@@ -46,18 +46,19 @@
 <div class="card border-0 shadow-sm rounded-3">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th style="width:60px;">#</th>
-                    <th>Student</th>
-                    <th>Book</th>
-                    <th>Accession No</th>
-                    <th>Issued</th>
-                    <th>Due</th>
-                    <th>Status</th>
-                    <th style="width:140px;" class="text-end">Actions</th>
-                </tr>
-            </thead>
+           <thead class="table-light">
+    <tr>
+        <th style="width:60px;">#</th>
+        <th>Student</th>
+        <th>Book</th>
+        <th>Accession No</th>
+        <th>Issued</th>
+        <th>Due</th>
+        <th>Status</th>
+        <th class="text-center">Fine</th>
+        <th style="width:180px;" class="text-end">Actions</th>
+    </tr>
+</thead>
             <tbody>
                 @forelse($issues as $issue)
                     <tr>
@@ -82,7 +83,32 @@
                                 {{ $issue->statusLabel() }}
                             </span>
                         </td>
+                        <td class="text-center">
+    @php
+        $fine = $issue->returned_at
+            ? $issue->fine_amount
+            : $issue->calculateFine();
+    @endphp
+
+    @if($fine > 0)
+        <span class="badge bg-danger">₹{{ number_format($fine, 2) }}</span>
+    @else
+        <span class="badge bg-success">₹0</span>
+    @endif
+</td>
                        <td class="text-end">
+                        @if($issue->returned_at && $issue->fine_amount > 0 && !$issue->fine_paid)
+    <form action="{{ route('librarian.issues.markPaid', $issue) }}"
+          method="POST" class="d-inline">
+        @csrf
+        @method('PUT')
+        <button class="btn btn-sm btn-warning" title="Mark fine as paid">
+            <i class="bi bi-cash"></i>
+        </button>
+    </form>
+@elseif($issue->fine_paid)
+    <span class="badge bg-success">Paid</span>
+@endif
     @if(!$issue->isReturned())
         <a href="{{ route('librarian.issues.showReturn', $issue) }}"
            class="btn btn-sm btn-outline-success">
@@ -97,7 +123,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="text-center py-5 text-muted">
+                        <td colspan="9" class="text-center py-5 text-muted">
                             <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
                             No issues found. Click "Issue Book" to get started.
                         </td>

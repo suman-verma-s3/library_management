@@ -99,4 +99,13 @@ class BookCopyController extends Controller
         $next = $last ? ((int) substr($last->accession_number, 4)) + 1 : 1;
         return 'LIB-' . str_pad($next, 4, '0', STR_PAD_LEFT);
     }
+
+    /**
+ * Show printable barcode label for a copy.
+ */
+public function printLabel(BookCopy $copy)
+{
+    $copy->load('book');
+    return view('admin.copies.print-label', compact('copy'));
+}
 }

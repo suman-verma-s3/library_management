@@ -161,6 +161,10 @@
                 href="{{ route('admin.copies.index') }}">
                 <i class="bi bi-collection"></i> Physical Copies
             </a>
+            <a class="nav-link {{ request()->routeIs('admin.analytics') ? 'active' : '' }}"
+   href="{{ route('admin.analytics') }}">
+    <i class="bi bi-graph-up-arrow"></i> Analytics
+</a>
         </nav>
 
         <div class="section-label">Reports</div>
@@ -181,6 +185,10 @@
        href="{{ route('reports.inventory') }}">
         <i class="bi bi-box-seam"></i> Inventory
     </a>
+    <a class="nav-link {{ request()->routeIs('reports.fines') ? 'active' : '' }}"
+   href="{{ route('reports.fines') }}">
+    <i class="bi bi-cash-stack"></i> Fines
+</a>
 </nav>
 
         <div class="section-label">Account</div>

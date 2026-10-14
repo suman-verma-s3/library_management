@@ -14,6 +14,8 @@ class Issue extends Model
         'due_date',
         'returned_at',
         'returned_by',
+    'fine_amount',
+    'fine_paid',
     ];
 
     protected $casts = [
@@ -64,5 +66,40 @@ class Issue extends Model
         if ($this->isReturned()) return 'success';
         if ($this->isOverdue())   return 'danger';
         return 'warning';
+    }
+
+        /**
+     * Calculate late fee.
+     */
+    public function calculateFine(): float
+    {
+        if (!$this->returned_at) {
+            if ($this->due_date->isPast()) {
+                $daysLate = $this->due_date->diffInDays(now());
+                return $daysLate * config('library.fine_per_day', 5);
+            }
+            return 0;
+        }
+
+        if ($this->returned_at->gt($this->due_date)) {
+            $daysLate = $this->due_date->diffInDays($this->returned_at);
+            return $daysLate * config('library.fine_per_day', 5);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Get days late.
+     */
+    public function daysLate(): int
+    {
+        $endDate = $this->returned_at ?? now();
+
+        if ($endDate->gt($this->due_date)) {
+            return $this->due_date->diffInDays($endDate);
+        }
+
+        return 0;
     }
 }
